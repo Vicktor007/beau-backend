@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -33,7 +34,8 @@ import java.util.List;
 public class AiChatBotServiceImpl implements AiChatBotService {
 
 
-    String GEMINI_API_KEY = "AIzaSyDp-jeRRqqbr08scpIn1p9rLEL_Nqv5Zuo";
+    @Value("${gemini.api.key}")
+    String GEMINI_API_KEY;
 
     @Autowired
      CartRepository cartRepository;
