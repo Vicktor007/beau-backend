@@ -79,8 +79,10 @@ public class SellerController {
         String email = req.getEmail();
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(email);
 
-        if (verificationCode == null || !verificationCode.getOtp().equals(otp)) {
-            throw new SellerException("wrong otp...");
+
+
+        if (verificationService.isOtpExpired(email) || !verificationCode.getOtp().equals(otp)) {
+            throw new SellerException("wrong otp, please request for another one.");
         }
 
         Authentication authentication = authenticate(req.getEmail());

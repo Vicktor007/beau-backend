@@ -16,6 +16,7 @@ import com.vic.ecommerce.response.AuthResponse;
 import com.vic.ecommerce.service.AuthService;
 import com.vic.ecommerce.service.EmailService;
 import com.vic.ecommerce.service.UserService;
+import com.vic.ecommerce.service.VerificationService;
 import com.vic.ecommerce.utils.OtpUtils;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -39,23 +40,30 @@ import java.util.List;
 public class AuthServiceImpl implements AuthService {
 
      @Autowired
- UserService userService;
+     UserService userService;
 
      @Autowired
- VerificationCodeRepository verificationCodeRepository;
-     @Autowired
- EmailService emailService;
-     @Autowired
- PasswordEncoder passwordEncoder;
-     @Autowired
- UserRepository userRepository;
+     VerificationCodeRepository verificationCodeRepository;
 
      @Autowired
- JwtProvider jwtProvider;
+     EmailService emailService;
+
      @Autowired
- CustomeUserServiceImplementation customUserDetails;
+     PasswordEncoder passwordEncoder;
+
      @Autowired
- CartRepository cartRepository;
+     UserRepository userRepository;
+
+     @Autowired
+     VerificationService verificationService;
+
+     @Autowired
+        JwtProvider jwtProvider;
+     @Autowired
+     CustomeUserServiceImplementation customUserDetails;
+
+     @Autowired
+     CartRepository cartRepository;
 
 
     @Override
@@ -99,8 +107,8 @@ public class AuthServiceImpl implements AuthService {
 
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(email);
 
-        if (verificationCode == null || !verificationCode.getOtp().equals(otp)) {
-            throw new SellerException("wrong otp...");
+        if (verificationService.isOtpExpired(email) || !verificationCode.getOtp().equals(otp)) {
+            throw new SellerException("wrong otp,please request for anther one.o");
         }
 
         User user = userRepository.findByEmail(email);
@@ -178,8 +186,8 @@ public class AuthServiceImpl implements AuthService {
         }
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(username);
 
-        if (verificationCode == null || !verificationCode.getOtp().equals(otp)) {
-            throw new SellerException("wrong otp...");
+        if (verificationService.isOtpExpired(username) || !verificationCode.getOtp().equals(otp)) {
+            throw new SellerException("wrong otp, please request for another one");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
