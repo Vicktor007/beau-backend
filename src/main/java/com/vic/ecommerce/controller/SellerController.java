@@ -82,7 +82,7 @@ public class SellerController {
 
 
         if (verificationService.isOtpExpired(email) || !verificationCode.getOtp().equals(otp)) {
-            throw new SellerException("wrong otp, please request for another one.");
+            throw new SellerException("Invalid otp, please request for another one.");
         }
 
         Authentication authentication = authenticate(req.getEmail());
